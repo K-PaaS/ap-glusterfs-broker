@@ -118,7 +118,7 @@ public class GlusterfsAdminService {
 			if (serviceInstance != null)
 				serviceInstance.withDashboardUrl(getDashboardUrl(serviceInstance.getServiceInstanceId()));
 		} catch (EmptyResultDataAccessException e) {
-			logger.debug("[paasta] GlusterfsAdminService.findById throw EmptyResultDataAccessException");
+			logger.debug("[ap] GlusterfsAdminService.findById throw EmptyResultDataAccessException");
 			return serviceInstance;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -348,13 +348,13 @@ public class GlusterfsAdminService {
 			    "} "+
 			"}";
 
-		logger.debug("[paasta] body : " + body);
+		logger.debug("[ap] body : " + body);
 		HttpEntity<String> entity = new HttpEntity<String>(body, headers);
 		ResponseEntity<String> response = null;
 		
 		try {
             String url = env.getRequiredProperty("glusterfs.authurl") + env.getRequiredProperty("glusterfs.uri.auth");
-            logger.debug("[paasta] url : " + url);
+            logger.debug("[ap] url : " + url);
 
             response = HttpClientUtils.send(url, entity, HttpMethod.POST);
 
@@ -362,7 +362,7 @@ public class GlusterfsAdminService {
                 throw new ServiceBrokerException("Response code is " + response.getStatusCode());
 
             //JsonNode json = JsonUtils.convertToJson(response);
-            //logger.debug("[paasta] json: " + json.toString());
+            //logger.debug("[ap] json: " + json.toString());
 
             //setAuthToken(json);
             if (response.getHeaders().containsKey("X-Subject-Token")){
@@ -396,8 +396,8 @@ public class GlusterfsAdminService {
         ConstantsAuthToken.ISSUED_AT = issued_at;
         ConstantsAuthToken.EXPIRES_AT = expires_at;
 
-        logger.debug("[paasta] setAuthToken ISSUED_AT: " + ConstantsAuthToken.ISSUED_AT );
-        logger.debug("[paasta] setAuthToken EXPIRES_AT : " + ConstantsAuthToken.EXPIRES_AT );
+        logger.debug("[ap] setAuthToken ISSUED_AT: " + ConstantsAuthToken.ISSUED_AT );
+        logger.debug("[ap] setAuthToken EXPIRES_AT : " + ConstantsAuthToken.EXPIRES_AT );
 	}
 	
 	/**
@@ -442,7 +442,7 @@ public class GlusterfsAdminService {
                         logger.debug("header[X-Container-Meta-Quota-Bytes] : " + headers.get("X-Container-Meta-Quota-Bytes").get(0));
 
 			response = HttpClientUtils.send(url, entity, HttpMethod.PUT);
-			logger.debug("[paasta] response.getStatusCode() = "+response.getStatusCode()+" = ");
+			logger.debug("[ap] response.getStatusCode() = "+response.getStatusCode()+" = ");
 
 			if (response.getStatusCode() != HttpStatus.ACCEPTED && response.getStatusCode() != HttpStatus.CREATED) throw new ServiceBrokerException("Response code is " + response.getStatusCode());
 
@@ -545,11 +545,11 @@ public class GlusterfsAdminService {
 		
 		HttpHeaders headers = new HttpHeaders();	
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		logger.debug("[paasta] AUTH_TOKEN1 :" + ConstantsAuthToken.AUTH_TOKEN +"=");
+		logger.debug("[ap] AUTH_TOKEN1 :" + ConstantsAuthToken.AUTH_TOKEN +"=");
 
         if (!isValidToken())
 			setGlusterfsAuthToken();
-		logger.debug("[paasta] AUTH_TOKEN2 : " + ConstantsAuthToken.AUTH_TOKEN);
+		logger.debug("[ap] AUTH_TOKEN2 : " + ConstantsAuthToken.AUTH_TOKEN);
 		headers.set("X-Auth-Token", ConstantsAuthToken.AUTH_TOKEN);
 		String body = 	"{" +
 				"\"project\": " +
@@ -570,19 +570,19 @@ public class GlusterfsAdminService {
 			String url = env.getRequiredProperty("glusterfs.endpoint") + env.getRequiredProperty("glusterfs.uri.createtenant");
 			logger.debug("createTenant() url : " + url);
 			if (serviceInstance != null)
-				logger.debug("[paasta] planId="+serviceInstance.getPlanId()+"=");
+				logger.debug("[ap] planId="+serviceInstance.getPlanId()+"=");
 			if (glusterfsServiceInstance != null)
-				logger.debug("[paasta] planId="+serviceInstance.getPlanId()+"=tenantId="+ glusterfsServiceInstance.getTenantId()+"=");
+				logger.debug("[ap] planId="+serviceInstance.getPlanId()+"=tenantId="+ glusterfsServiceInstance.getTenantId()+"=");
 
 			response = HttpClientUtils.send(url, entity, HttpMethod.POST);
 
 			JsonNode json = JsonUtils.convertToJson(response);
-			logger.debug("[paasta] json ="+json +"=");
+			logger.debug("[ap] json ="+json +"=");
 
 			glusterfsServiceInstance = new GlusterfsServiceInstance(serviceInstance);
-	            	logger.debug("[paasta] getTenantId=" + glusterfsServiceInstance.getTenantId()+"=getServiceInstanceId="+glusterfsServiceInstance.getServiceInstanceId());
+	            	logger.debug("[ap] getTenantId=" + glusterfsServiceInstance.getTenantId()+"=getServiceInstanceId="+glusterfsServiceInstance.getServiceInstanceId());
 			setTenantInfo(json,glusterfsServiceInstance);
-            		logger.debug("[paasta] getTenantId=" + glusterfsServiceInstance.getTenantId()+"=getServiceInstanceId="+glusterfsServiceInstance.getServiceInstanceId());
+            		logger.debug("[ap] getTenantId=" + glusterfsServiceInstance.getTenantId()+"=getServiceInstanceId="+glusterfsServiceInstance.getServiceInstanceId());
 
             		setGlusterfsQuota(serviceInstance.getPlanId(), glusterfsServiceInstance.getTenantId());
 			
@@ -795,8 +795,8 @@ public class GlusterfsAdminService {
 		try{
 				
 			String url = env.getRequiredProperty("glusterfs.endpoint") + env.getRequiredProperty("glusterfs.uri.createusers");
-			logger.debug("[paasta] createUser() url : " + url);
-			logger.debug("[paasta] ConstantsAuthToken.AUTH_TOKEN="+ConstantsAuthToken.AUTH_TOKEN+"= headers[X-Auth-Token]="+ entity.getHeaders().get("X-Auth-Token").get(0)+"=");
+			logger.debug("[ap] createUser() url : " + url);
+			logger.debug("[ap] ConstantsAuthToken.AUTH_TOKEN="+ConstantsAuthToken.AUTH_TOKEN+"= headers[X-Auth-Token]="+ entity.getHeaders().get("X-Auth-Token").get(0)+"=");
 			
 			response = HttpClientUtils.send(url, entity, HttpMethod.POST);
 			
